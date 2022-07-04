@@ -49,6 +49,14 @@ public class MarkableSeekBar extends AppCompatSeekBar {
         drawMarkers();
     }
 
+    @Override
+    public void setSecondaryProgress(final int progress) {
+        super.setSecondaryProgress(progress);
+        if (seekBarMarkers != null && seekBarMarkers.size() != 0) {
+            invalidate();
+        }
+    }
+
     public void drawMarkers() {
         if (seekBarMarkers.size() == 0) {
             return;
