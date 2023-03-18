@@ -199,7 +199,7 @@ public final class TextLinkifier {
      * This method will also add click listeners on timestamps in this description, which will play
      * the content in the popup player at the time indicated in the timestamp, by using
      * {@link TextLinkifier#addClickListenersOnTimestamps(Context, SpannableStringBuilder,
-     * StreamingService, String, CompositeDisposable)} method and click listeners on hashtags, by
+     * StreamingService, String)} method and click listeners on hashtags, by
      * using {@link TextLinkifier#addClickListenersOnHashtags(Context, SpannableStringBuilder,
      * StreamingService)}, which will open a search on the current service with the hashtag.
      * </p>
@@ -240,7 +240,7 @@ public final class TextLinkifier {
                     for (final URLSpan span : urls) {
                         final String url = span.getURL();
                         final LongPressClickableSpan longPressClickableSpan =
-                                new UrlLongPressClickableSpan(context, disposables, url);
+                                new UrlLongPressClickableSpan(context, url);
 
                         textBlockLinked.setSpan(longPressClickableSpan,
                                 textBlockLinked.getSpanStart(span),
@@ -254,7 +254,7 @@ public final class TextLinkifier {
                     if (relatedInfoService != null) {
                         if (relatedStreamUrl != null) {
                             addClickListenersOnTimestamps(context, textBlockLinked,
-                                    relatedInfoService, relatedStreamUrl, disposables);
+                                    relatedInfoService, relatedStreamUrl);
                         }
                         addClickListenersOnHashtags(context, textBlockLinked, relatedInfoService);
                     }
@@ -313,7 +313,7 @@ public final class TextLinkifier {
     }
 
     /**
-     * Add click listeners which opens the popup player on timestamps in a plain text.
+     * Add click listeners which seeks the player to timestamps in a plain text.
      *
      * <p>
      * This method finds all timestamps in the {@link SpannableStringBuilder} of the description
@@ -327,15 +327,12 @@ public final class TextLinkifier {
      *                             content description
      * @param relatedInfoService   the service of the {@code relatedStreamUrl}
      * @param relatedStreamUrl     what to open in the popup player when timestamps are clicked
-     * @param disposables          disposables created by the method are added here and their
-     *                             lifecycle should be handled by the calling class
      */
     private static void addClickListenersOnTimestamps(
             @NonNull final Context context,
             @NonNull final SpannableStringBuilder spannableDescription,
             @NonNull final StreamingService relatedInfoService,
-            @NonNull final String relatedStreamUrl,
-            @NonNull final CompositeDisposable disposables) {
+            @NonNull final String relatedStreamUrl) {
         final String descriptionText = spannableDescription.toString();
         final Matcher timestampsMatches = TimestampExtractor.TIMESTAMPS_PATTERN.matcher(
                 descriptionText);
@@ -349,7 +346,7 @@ public final class TextLinkifier {
             }
 
             spannableDescription.setSpan(
-                    new TimestampLongPressClickableSpan(context, descriptionText, disposables,
+                    new TimestampLongPressClickableSpan(context, descriptionText,
                             relatedInfoService, relatedStreamUrl, timestampMatchDTO),
                     timestampMatchDTO.timestampStart(),
                     timestampMatchDTO.timestampEnd(),
